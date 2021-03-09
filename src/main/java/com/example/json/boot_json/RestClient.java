@@ -1,7 +1,6 @@
 package com.example.json.boot_json;
 
 
-import com.example.json.boot_json.models.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -9,9 +8,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.*;
-
-import static org.springframework.http.HttpMethod.POST;
 
 public class RestClient {
 
@@ -23,9 +25,9 @@ public class RestClient {
 
     private static RestTemplate restTemplate = new RestTemplate();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         RestClient restClient = new RestClient();
-
+        System.out.println(restClient.getSession());
         restClient.getUsers();
         //restClient.createUser();
         // restClient.updateUser();
@@ -42,11 +44,7 @@ public class RestClient {
         ResponseEntity<String> result = restTemplate.exchange(GET_USERS_ENDPOINT_URL, HttpMethod.GET, entity,
                 String.class);
 
-        System.out.println(result.getHeaders());
-
-        User newUser = new User(3L, "James", "Brown", (byte) 12);
-        User result1 = restTemplate.postForObject(CREATE_USER_ENDPOINT_URL,  newUser, User.class);
-
+        System.out.println(result.getHeaders());      //String cookie = result.getHeaders("Set-Cookie").split(";")[0];
 
     }
 
@@ -55,7 +53,7 @@ public class RestClient {
 //        RestTemplate restTemplate = new RestTemplate();
 //        User result = restTemplate.postForObject(CREATE_USER_ENDPOINT_URL, newUser, User.class);
 //        System.out.println(result);
-    }
+//    }
 //    private void updateUser() {
 //        Map <String, String> params = new HashMap <String, String> ();
 //        params.put("id", "3");
@@ -63,5 +61,19 @@ public class RestClient {
 //        RestTemplate restTemplate = new RestTemplate();
 //        restTemplate.put(UPDATE_USER_ENDPOINT_URL, updatedEmployee, params);
 //    }
+String getSession() throws IOException {
+    URL url = new URL("http://91.241.64.178:7081/api/users");
+    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+    con.setRequestMethod("GET");
+    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+    String inputLine;
+    final StringBuilder content = new StringBuilder();
+    while ((inputLine = in.readLine()) != null) {
+        content.append(inputLine);
+        String cookie = con.getHeaderField("Set-Cookie").split(";")[0];
+    }
 
+    return inputLine;
+}
+}
 
