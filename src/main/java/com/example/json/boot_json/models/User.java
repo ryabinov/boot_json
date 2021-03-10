@@ -1,11 +1,13 @@
 package com.example.json.boot_json.models;
 
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.List;
 
-
+@Entity
 public class User {
-
+    @Id
     private Long id;
     private String name;
     private String lastName;
@@ -15,9 +17,6 @@ public class User {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public User(Long id, String name, String lastName, Byte age) {
         this.id = id;
@@ -62,4 +61,8 @@ public class User {
                 ", age=" + age +
                 '}';
     }
+
+
 }
+
+
